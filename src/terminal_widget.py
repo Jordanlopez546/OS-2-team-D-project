@@ -310,7 +310,7 @@ class TerminalWidget(QPlainTextEdit):
   # PROMPT INSERTION
   def insert_prompt(self):
     self.setReadOnly(False)
-    prompt_text = f"{self.prompt}{self.current_directory}"
+    prompt_text = f"{self.prompt}{self.current_directory}>"
     self.appendPlainText("" if self.document().isEmpty() else "\n")
     self.insertPlainText(prompt_text + " ")
     self.last_prompt_position = self.textCursor().position()
