@@ -312,19 +312,22 @@ class TerminalWidget(QPlainTextEdit):
     self.setReadOnly(False)
     prompt_text = f"{self.prompt}{self.current_directory}>"
     self.appendPlainText("" if self.document().isEmpty() else "\n")
-    self.insertPlainText(prompt_text + " ")
+    self.insertPlainText(prompt_text + "")
     self.last_prompt_position = self.textCursor().position()
     self.moveCursor(QTextCursor.MoveOperation.End)
     self.setReadOnly(False)
  
   # CURRENT COMMAND UPDATE
   def replace_current_command(self, new_command):
+    self.setReadOnly(False)
     cursor = self.textCursor()
     cursor.movePosition(QTextCursor.MoveOperation.End)
     cursor.movePosition(QTextCursor.MoveOperation.StartOfBlock, QTextCursor.MoveMode.KeepAnchor)
     cursor.removeSelectedText()
-    prompt_text = f"{self.prompt}{self.current_directory} "
+    
+    prompt_text = f"{self.prompt}{self.current_directory}>"
     cursor.insertText(prompt_text + new_command)
+    self.setReadOnly(False)
   
   # KEY PRESS EVENTS
   def keyPressEvent(self, event):
