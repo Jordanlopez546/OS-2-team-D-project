@@ -106,11 +106,25 @@ class TerminalWidget(QPlainTextEdit):
   # CREATE A FILE
   def create_file(self, file_name):
     try:
-      new_file = self.current_directory / file_name
-      new_file.touch()
-      self.appendPlainText(f"\nFile created: {new_file}")
+        new_file = self.current_directory / file_name
+        
+        # Check if file already exists
+        if new_file.exists():
+            self.appendPlainText(f"\nError: File '{file_name}' already exists")
+            return
+            
+        # Check if the file extension is valid (optional)
+        valid_extensions = ['.txt', '.py', '.md', '.json', '.csv']  # Add more as needed
+        if not any(file_name.lower().endswith(ext) for ext in valid_extensions):
+            self.appendPlainText(f"\nError: Invalid file type. Please use one of these extensions: {', '.join(valid_extensions)}")
+            return
+            
+        # If all checks pass, create the file
+        new_file.touch()
+        self.appendPlainText(f"\nFile created: {new_file}")
+        
     except Exception as e:
-      self.appendPlainText(f"\nError creating file: {e}")
+        self.appendPlainText(f"\nError creating file: {e}")
 
   # CREATE OR UPDATE EXISTING FILE
   def write_to_file(self, file_name, content):
@@ -166,11 +180,25 @@ class TerminalWidget(QPlainTextEdit):
   # DIRECTORY CREATION
   def create_directory(self, directory_name):
     try:
-      new_dir = self.current_directory / directory_name
-      new_dir.mkdir(exist_ok=True)
-      self.appendPlainText(f"\nDirectory created: {new_dir}")
+        # Check for invalid characters in directory name
+        invalid_chars = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+        if any(char in directory_name for char in invalid_chars):
+            self.appendPlainText(f"\nError: Directory name contains invalid characters. Cannot use: {' '.join(invalid_chars)}")
+            return
+
+        new_dir = self.current_directory / directory_name
+        
+        # Check if directory already exists
+        if new_dir.exists():
+            self.appendPlainText(f"\nError: Directory '{directory_name}' already exists")
+            return
+            
+        # If checks pass, create the directory
+        new_dir.mkdir()
+        self.appendPlainText(f"\nDirectory created: {new_dir}")
+        
     except Exception as e:
-      self.appendPlainText(f"\nError creating directory: {e}")
+        self.appendPlainText(f"\nError creating directory: {e}")
 
   # SHOW REMOVE DIRECTORY HELP
   def show_rmdir_help(self):
